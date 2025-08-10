@@ -139,7 +139,7 @@ export default function RemoveBgTool() {
     form.append("image", file); // harus sama seperti di multer (server/index.js)
 
     try {
-      const res = await fetch("http://localhost:3001/remove-background", {
+      const res = await fetch("https://98f54baf-1e61-4271-a6f6-0f276cf17dcc-00-d3132dnfxa3j.sisko.replit.dev/remove-background", {
         method: "POST",
         body: form,
       });
