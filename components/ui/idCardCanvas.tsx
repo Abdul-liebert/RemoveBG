@@ -25,7 +25,7 @@ const IDCardCanvas = forwardRef<IDCardCanvasHandle, IDCardCanvasProps>(
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
 
-        const filename = `${nim}_${name}_${idFoto}`
+        const filename = `${nim}_${name}_${prodi}_${idFoto}`
 
         const link = document.createElement("a");
         link.href = url;
