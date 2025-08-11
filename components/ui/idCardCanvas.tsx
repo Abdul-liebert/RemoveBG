@@ -7,6 +7,7 @@ interface IDCardCanvasProps {
   name: string;
   prodi: string;
   nim: string;
+  idFoto: string;
   
 }
 
@@ -15,7 +16,7 @@ export interface IDCardCanvasHandle {
 }
 
 const IDCardCanvas = forwardRef<IDCardCanvasHandle, IDCardCanvasProps>(
-  ({ photoUrl, name, prodi, nim }, ref) => {
+  ({ photoUrl, name, prodi, nim, idFoto }, ref) => {
     const canvasRef = useRef<HTMLDivElement>(null);
 
     const handleDownload = async () => {
@@ -24,7 +25,7 @@ const IDCardCanvas = forwardRef<IDCardCanvasHandle, IDCardCanvasProps>(
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
 
-        const filename = `${nim}_${name}_$`
+        const filename = `${nim}_${name}_${idFoto}`
 
         const link = document.createElement("a");
         link.href = url;

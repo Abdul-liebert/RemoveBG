@@ -257,6 +257,7 @@ export default function RemoveBgTool() {
               name={name}
               prodi={prodi}
               nim={nim}
+              idFoto={idFoto}
             />
 
             <Separator />
