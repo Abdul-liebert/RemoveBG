@@ -101,22 +101,38 @@ export default function RemoveBgTool() {
     }, 1000);
   };
 
-  const handleCapture = () => {
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    if (video && canvas) {
-      const ctx = canvas.getContext("2d");
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      ctx?.drawImage(video, 0, 0, canvas.width, canvas.height);
+const handleCapture = () => {
+  const video = videoRef.current;
+  const canvas = canvasRef.current;
+  if (video && canvas) {
+    const ctx = canvas.getContext("2d");
 
-      canvas.toBlob((blob) => {
+    // Faktor pembesaran (2x lipat misalnya)
+    const scale = 2;
+    canvas.width = video.videoWidth * scale;
+    canvas.height = video.videoHeight * scale;
+
+    // Draw image dengan ukuran lebih besar
+    ctx?.drawImage(
+      video,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+    canvas.toBlob(
+      (blob) => {
         if (!blob) return;
         const file = new File([blob], "captured.png", { type: "image/png" });
         uploadImage(file);
-      }, "image/png");
-    }
-  };
+      },
+      "image/png",
+      1 // kualitas maks
+    );
+  }
+};
+
 
   const handleUpload = () => {
     const file = fileInputRef.current?.files?.[0];
