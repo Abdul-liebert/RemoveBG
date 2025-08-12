@@ -48,7 +48,7 @@ const IDCardCanvas = forwardRef<IDCardCanvasHandle, IDCardCanvasProps>(
           <div className="relative w-full aspect-[650/1024]">
             <div
               ref={canvasRef}
-              className="absolute top-0 left-0 w-full h-full bg-white overflow-hidden border border-gray-300 shadow-lg"
+              className="absolute top-0 left-0 w-full h-full bg-white overflow-hidden shadow-lg"
             >
               <img
                 src="/template-idcard.png"
@@ -59,7 +59,7 @@ const IDCardCanvas = forwardRef<IDCardCanvasHandle, IDCardCanvasProps>(
               <img
                 src={photoUrl}
                 alt="Foto Mahasiswa"
-                className="absolute left-[170px] top-[210px] w-[320px] h-[620px] scale-[0.538] origin-top-left object-cover rounded-lg"
+                className="absolute left-[200px] top-[245px] w-[320px] h-[620px] scale-[0.538] origin-top-left object-cover rounded-lg"
               />
 
               <div className="absolute text-black font-[montserrat] font-bold text-[32px] top-[280px] scale-[0.538] origin-top-left left-[32px] w-[300px] h-[50px] overflow-hidden">
