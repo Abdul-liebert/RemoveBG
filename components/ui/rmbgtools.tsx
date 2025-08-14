@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import IDCardCanvas, { IDCardCanvasHandle } from "./idCardCanvas";
+
+
 export default function RemoveBgTool() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -20,6 +22,7 @@ export default function RemoveBgTool() {
   const [name, setName] = useState("");
   const [prodi, setProdi] = useState("");
   const [nim, setNim] = useState("");
+  const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [idFoto, setIdFoto] = useState("");
 
   // Start camera
@@ -106,11 +109,11 @@ const handleCapture = () => {
   const canvas = canvasRef.current;
   if (video && canvas) {
     const ctx = canvas.getContext("2d");
-
+    
     // Faktor pembesaran (2x lipat misalnya)
-    const scale = 2;
-    canvas.width = video.videoWidth * scale;
-    canvas.height = video.videoHeight * scale;
+      const scale = window.devicePixelRatio || 1
+      canvas.width = video.videoWidth * scale;
+  canvas.height = video.videoHeight * scale;
 
     // Draw image dengan ukuran lebih besar
     ctx?.drawImage(
@@ -122,10 +125,24 @@ const handleCapture = () => {
     );
 
     canvas.toBlob(
-      (blob) => {
+      async (blob) => {
         if (!blob) return;
-        const file = new File([blob], "captured.png", { type: "image/png" });
-        uploadImage(file);
+        const formData = new FormData();
+    formData.append("image", blob, "capture.png");
+
+     try {
+      const res = await fetch("https://98f54baf-1e61-4271-a6f6-0f276cf17dcc-00-d3132dnfxa3j.sisko.replit.dev/remove-background", {
+        method: "POST",
+        body: formData
+      });
+
+      if (!res.ok) throw new Error("Upload failed");
+
+      const resultBlob = await res.blob();
+      setCapturedImage(URL.createObjectURL(resultBlob));
+    } catch (err) {
+      console.error(err);
+    }
       },
       "image/png",
       1 // kualitas maks

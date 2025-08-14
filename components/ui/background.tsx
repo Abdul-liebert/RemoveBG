@@ -9,7 +9,10 @@ export default function Background() {
       <DotPattern
         className={cn(
           "h-full w-full",
-    "[mask-image:radial-gradient(2400px_circle_at_center,transparent,white)]"
+          // Light mode
+          "[mask-image:radial-gradient(2400px_circle_at_center,transparent,white)]",
+          // Dark mode (gradient ke #0f172a atau warna lain)
+          "dark:[mask-image:radial-gradient(2400px_circle_at_center,transparent,#0f172a)]"
         )}
       />
     </div>

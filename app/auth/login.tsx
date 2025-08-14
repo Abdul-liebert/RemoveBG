@@ -1,4 +1,4 @@
-// app/page.tsx
+
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/ui/footer";
 import Header from "@/components/ui/header";
@@ -19,7 +19,6 @@ import LoginForm from "@/components/ui/loginForm";
 
 
 
-
 export default function Home() {
   return (
 
@@ -27,7 +26,7 @@ export default function Home() {
        
       <main className="flex min-h-screen items-center justify-center">
         <LoginForm/>
-        {/* <RemoveBgTool></RemoveBgTool                                                                                > */}
+        {/* <RemoveBgTool></RemoveBgTool> */}
     </main>
     
     </div>
