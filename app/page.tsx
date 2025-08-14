@@ -26,8 +26,8 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
        
       <main className="flex min-h-screen items-center justify-center">
-        <LoginForm/>
-        {/* <RemoveBgTool></RemoveBgTool                                                                                > */}
+        {/* <LoginForm/> */}
+        <RemoveBgTool></RemoveBgTool                                                                                >
     </main>
     
     </div>
