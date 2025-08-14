@@ -107,48 +107,65 @@ export default function RemoveBgTool() {
 const handleCapture = () => {
   const video = videoRef.current;
   const canvas = canvasRef.current;
-  if (video && canvas) {
-    const ctx = canvas.getContext("2d");
-    
-    // Faktor pembesaran (2x lipat misalnya)
-      const scale = window.devicePixelRatio || 1
-      canvas.width = video.videoWidth * scale;
+
+  if (!video || !canvas) return;
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    console.error("Canvas context not found");
+    return;
+  }
+
+  setLoading(true);
+  setResultUrl(null);
+
+  // Faktor pembesaran sesuai device pixel ratio
+  const scale = window.devicePixelRatio || 1;
+  canvas.width = video.videoWidth * scale;
   canvas.height = video.videoHeight * scale;
 
-    // Draw image dengan ukuran lebih besar
-    ctx?.drawImage(
-      video,
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    );
+  // Gambar frame video ke canvas
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    canvas.toBlob(
-      async (blob) => {
-        if (!blob) return;
-        const formData = new FormData();
-    formData.append("image", blob, "capture.png");
+  // Konversi ke Blob dan kirim ke API
+  canvas.toBlob(
+    async (blob) => {
+      if (!blob) {
+        setLoading(false);
+        return;
+      }
 
-     try {
-      const res = await fetch("https://98f54baf-1e61-4271-a6f6-0f276cf17dcc-00-d3132dnfxa3j.sisko.replit.dev/remove-background", {
-        method: "POST",
-        body: formData
-      });
+      const formData = new FormData();
+      formData.append("image", blob, "capture.png");
 
-      if (!res.ok) throw new Error("Upload failed");
+      try {
+        const res = await fetch(
+          "https://98f54baf-1e61-4271-a6f6-0f276cf17dcc-00-d3132dnfxa3j.sisko.replit.dev/remove-background",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
 
-      const resultBlob = await res.blob();
-      setCapturedImage(URL.createObjectURL(resultBlob));
-    } catch (err) {
-      console.error(err);
-    }
-      },
-      "image/png",
-      1 // kualitas maks
-    );
-  }
+        if (!res.ok) throw new Error(`Upload failed: ${res.statusText}`);
+
+        const resultBlob = await res.blob();
+        const imageUrl = URL.createObjectURL(resultBlob);
+
+        setCapturedImage(imageUrl); // kalau mau disimpan juga
+        setResultUrl(imageUrl); // supaya UI langsung update
+      } catch (err) {
+        console.error("Error removing background:", err);
+        alert("Gagal memproses gambar.");
+      } finally {
+        setLoading(false);
+      }
+    },
+    "image/png",
+    1
+  );
 };
+
 
 
   const handleUpload = () => {
