@@ -17,13 +17,12 @@ import { Label } from "@/components/ui/label";
 import RemoveBgTool from "@/components/ui/rmbgtools";
 import LoginForm from "@/components/ui/loginForm";
 
-export default function Home() {
+export default function Login() {
   return (
     <div className="flex flex-col min-h-screen">
-      <main className="flex  min-h-screen items-center justify-center">
-      
-        {/* <LoginForm/> */}
-        <RemoveBgTool></RemoveBgTool>
+      <main className="flex min-h-screen items-center justify-center">
+        <LoginForm />
+        {/* <RemoveBgTool></RemoveBgTool>                       */}
       </main>
     </div>
   );

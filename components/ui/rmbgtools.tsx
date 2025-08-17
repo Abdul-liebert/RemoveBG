@@ -1,11 +1,13 @@
 "use client";
 import { use, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import IDCardCanvas, { IDCardCanvasHandle } from "./idCardCanvas";
+import { ThemeToggle } from "./thme-toggle";
+import { useRouter } from "next/navigation";
 
 
 export default function RemoveBgTool() {
@@ -24,6 +26,15 @@ export default function RemoveBgTool() {
   const [nim, setNim] = useState("");
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [idFoto, setIdFoto] = useState("");
+
+  const router = useRouter()
+
+   const handleLogout = async () => {
+    await fetch("/api/logout", {
+      method: "POST",
+    });
+    router.push("/login"); // redirect ke halaman login
+  };
 
   // Start camera
   useEffect(() => {
@@ -240,8 +251,22 @@ const handleCapture = () => {
   // };
 
   return (
-  <div className="grid md:grid-cols-2 gap-6 p-6">
+    
+  <div className="flex flex-col ">
+    <Card className="w-full mt-5 py-4 px-5">
+          <div className="flex justify-between">
+
+          <h1 className="text-2xl font-bold">Remover</h1>
+          <div className="flex gap-4">
+          <ThemeToggle></ThemeToggle>
+          <Button onClick={handleLogout}>Sign Out</Button>
+          </div>
+          </div>
+        
+      </Card>
     {/* Left Panel */}
+    <div className="grid md:grid-cols-2 gap-6 p-6">
+
     <Card className="w-full max-w-xl ">
       <CardContent className="space-y-4 p-4">
         <Label className="flex justify-center font-bold text-lg">
@@ -368,6 +393,8 @@ const handleCapture = () => {
         
       </CardContent>
     </Card>
+    </div>
+    
   </div>
 );
 

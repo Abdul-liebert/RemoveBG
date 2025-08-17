@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 import { Label } from "./label"
 import { Input } from "./input"
 import { Button } from "./button"
+
 import { Icons } from "./icons"
 
 export function UserAuthForm({
@@ -12,11 +13,27 @@ export function UserAuthForm({
   ...props
 }: React.ComponentProps<"div">) {
   const [isLoading, setIsLoading] = React.useState(false)
-  const [isLogin, setIsLogin] = React.useState(false) // mode login atau signup
+  const [username, setUsername] = React.useState('')
+  const [password, setPassword] = React.useState('')
+  const [error, setError] = React.useState('')
+
 
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault()
     setIsLoading(true)
+
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      body:JSON.stringify({username, password}),
+      headers: {'Content-Type':'application/json'}
+    })
+
+    if (res.ok){
+      window.location.href='/'
+    }else{
+      const data = await res.json()
+      setError(data.message)
+    }
 
     setTimeout(() => {
       setIsLoading(false)
@@ -45,9 +62,10 @@ export function UserAuthForm({
             <Input
               id="email"
               placeholder="name@example.com"
-              type="email"
+              type="text"
+              value={username}
+              onChange={(e)=> setUsername(e.target.value)}
               autoCapitalize="none"
-              autoComplete="email"
               autoCorrect="off"
               disabled={isLoading}
             />
@@ -59,6 +77,8 @@ export function UserAuthForm({
               id="password"
               placeholder="••••••••"
               type="password"
+              value={password}
+              onChange={(e)=>setPassword(e.target.value)}
               autoComplete="current-password"
               disabled={isLoading}
             />
@@ -76,19 +96,6 @@ export function UserAuthForm({
         </div>
       </form>
 
-      <div className="text-center text-sm">
-      
-          <>
-            Already have an account?{" "}
-            <button
-              onClick={() => setIsLogin(true)}
-              className="text-blue-500 hover:underline"
-            >
-              Login
-            </button>
-          </>
-        
-      </div>
     </div>
   )
 }

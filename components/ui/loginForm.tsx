@@ -5,42 +5,25 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import Link from "next/link"
-import { UserAuthForm } from "./user-auth-form"
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import Link from "next/link";
+import { UserAuthForm } from "./user-auth-form";
 
 export default function LoginForm() {
   return (
-    <Card className="mx-auto bg-neutral-900 max-w-3xl grid grid-cols-1 lg:grid-cols-2 overflow-hidden">
-      
-      <div className="bg-white text-black flex flex-col p-10 justify-between">
+    <Card className="mx-auto  dark:bg-neutral-900 max-w-3xl grid grid-cols-1 lg:grid-cols-2 overflow-hidden">
+      <div className="bg-neutral-900 dark:bg-white text-white dark:text-black flex flex-col p-10 justify-between">
         <div className="flex items-center text-lg font-medium">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="mr-2 h-6 w-6"
-          >
-            <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
-          </svg>
-          Acme Inc
+          Universitas Pertamina
         </div>
         <blockquote className="leading-normal text-balance mt-8">
-          &ldquo;This library has saved me countless hours of work and helped me
-          deliver stunning designs to my clients faster than ever
-          before.&rdquo; - Sofia Davis
+          &ldquo;Innovation comes from saying "no" to 1000 things. &rdquo; -
+          Steve Jobs
         </blockquote>
       </div>
 
-      
       <CardContent className=" flex flex-col justify-center p-8">
-        
-
         <div className="mt-6">
           <UserAuthForm />
         </div>
@@ -64,5 +47,5 @@ export default function LoginForm() {
         </p>
       </CardContent>
     </Card>
-  )
+  );
 }
