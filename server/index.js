@@ -1,39 +1,80 @@
-  // const express = require("express");
-  // const multer = require("multer");
-  // const { exec } = require("child_process");
-  // const fs = require("fs");
-  // const path = require("path");
-  // const cors = require("cors");
+const express = require("express");
+const multer = require("multer");
+const { exec } = require("child_process");
+const path = require("path");
+const fs = require("fs");
+const cors = require("cors");
+const sharp = require("sharp");
 
-  // const app = express();
-  // app.use(cors());
-  // app.use(express.json());
+const app = express();
+app.use(cors());
 
-  // // Konfigurasi upload
-  // const upload = multer({ dest: "uploads/" });
+const upload = multer({ dest: "uploads/" });
 
-  // // Remove Background API
-  // app.post("/remove-background", upload.single("image"), (req, res) => {
-  //   if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+app.get("/", (req, res) => {
+  res.send("RemoveBG Backend is running!");
+});
 
-  //   const inputPath = req.file.path;
-  //   const outputPath = `${inputPath}-output.png`;
+app.post("/remove-background", upload.single("image"), async (req, res) => {
+  if (!req.file) return res.status(400).json({ error: "No file uploaded" });
 
-  //   exec(`rembg i "${inputPath}" "${outputPath}"`, (error) => {
-  //     if (error) {
-  //       console.error("Rembg error:", error);
-  //       return res.status(500).json({ error: "Failed to remove background" });
-  //     }
+  const inputPath = req.file.path;
+  const resizedPath = `${inputPath}-resized.png`;
+  const bgRemovedPath = `${inputPath}-no-bg.png`;
+  const finalPath = `${inputPath}-final.png`;
 
-  //     res.sendFile(path.resolve(outputPath), () => {
-  //       fs.unlinkSync(inputPath);
-  //       fs.unlinkSync(outputPath);
-  //     });
-  //   });
-  // });
+  const rembgPath = "rembg";
 
-  // // Jalankan server
-  // const PORT = process.env.PORT || 3001;
-  // app.listen(PORT, () => {
-  //   console.log(`Server running on port ${PORT}`);
-  // });
+  try {
+    // Ambil metadata setelah inputPath ada
+    const metadata = await sharp(inputPath).metadata();
+
+    // 1. Resize dulu biar hemat RAM
+    await sharp(inputPath)
+      .resize({ width: 800 }) // kalau terlalu besar, limit aja ke 800px
+      .toFile(resizedPath);
+
+    // 2. Jalankan rembg
+    const cmd = `rembg i -a \
+  --alpha-matting \
+  --alpha-matting-foreground-threshold 240 \
+  --alpha-matting-background-threshold 10 \
+  --alpha-matting-erode-size 10 \
+  --post-process-mask \
+  "${resizedPath}" "${bgRemovedPath}"`;
+
+    exec(cmd, async (error) => {
+      if (error) {
+        console.error("Rembg error:", error);
+        return res.status(500).json({ error: "Failed to remove background" });
+      }
+
+      try {
+        // 3. Perbesar hasil sesuai ukuran asli + haluskan edge
+        await sharp(bgRemovedPath)
+          .resize({ width: metadata.width })
+          .blur(0.3)
+          .median(3)
+          .toFile(finalPath);
+
+        res.sendFile(path.resolve(finalPath), () => {
+          // cleanup file sementara
+          [inputPath, resizedPath, bgRemovedPath, finalPath].forEach((p) => {
+            if (fs.existsSync(p)) fs.unlinkSync(p);
+          });
+        });
+      } catch (err) {
+        console.error("Sharp error:", err);
+        res.status(500).json({ error: "Failed to process final image" });
+      }
+    });
+  } catch (err) {
+    console.error("Resize error:", err);
+    res.status(500).json({ error: "Failed to resize image" });
+  }
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
