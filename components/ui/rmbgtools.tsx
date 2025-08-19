@@ -151,7 +151,7 @@ const handleCapture = () => {
 
       try {
         const res = await fetch(
-          "http://localhost:5000//remove-background",
+          "http://localhost:5000/remove-background",
           {
             method: "POST",
             body: formData,
